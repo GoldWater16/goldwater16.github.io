@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="TCP 滑动窗口作用：121. 提供TCP可靠性：对发送的数据进行确认2. 流量控制：窗口大小随链路变化 一、TCP窗口机制1TCP中窗口大小是指tcp协议一次传输多少个数据。因为TCP是一个面向连接的可靠的传输协议，既然是可靠的就需要传输的数据进行确认。TCP窗口机制有两种，一种是固定窗口大小，另一种是滑动窗口。数据在传输时，TCP会对所有数据进行编号，发送方在发送过程中始终保持着一个窗口，只有">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/2019/03/08/TCP 滑动窗口/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="TCP 滑动窗口作用：121. 提供TCP可靠性：对发送的数据进行确认2. 流量控制：窗口大小随链路变化 一、TCP窗口机制1TCP中窗口大小是指tcp协议一次传输多少个数据。因为TCP是一个面向连接的可靠的传输协议，既然是可靠的就需要传输的数据进行确认。TCP窗口机制有两种，一种是固定窗口大小，另一种是滑动窗口。数据在传输时，TCP会对所有数据进行编号，发送方在发送过程中始终保持着一个窗口，只有">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="c:/Users/Administrator/Downloads/滑动窗口原理.png">
+<meta property="og:image" content="c:/Users/Administrator/Downloads/滑动窗口发送端丢包原理图.png">
+<meta property="og:image" content="c:/Users/Administrator/Downloads/滑动窗口接收端丢包原理图.png">
+<meta property="og:updated_time" content="2019-03-04T11:33:33.040Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+<meta name="twitter:description" content="TCP 滑动窗口作用：121. 提供TCP可靠性：对发送的数据进行确认2. 流量控制：窗口大小随链路变化 一、TCP窗口机制1TCP中窗口大小是指tcp协议一次传输多少个数据。因为TCP是一个面向连接的可靠的传输协议，既然是可靠的就需要传输的数据进行确认。TCP窗口机制有两种，一种是固定窗口大小，另一种是滑动窗口。数据在传输时，TCP会对所有数据进行编号，发送方在发送过程中始终保持着一个窗口，只有">
+<meta name="twitter:image" content="c:/Users/Administrator/Downloads/滑动窗口原理.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-TCP 滑动窗口" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/03/08/TCP 滑动窗口/" class="article-date">
+  <time datetime="2019-03-08T13:44:29.216Z" itemprop="datePublished">2019-03-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="TCP-滑动窗口"><a href="#TCP-滑动窗口" class="headerlink" title="TCP 滑动窗口"></a>TCP 滑动窗口</h3><h4 id="作用："><a href="#作用：" class="headerlink" title="作用："></a>作用：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. 提供TCP可靠性：对发送的数据进行确认</span><br><span class="line">2. 流量控制：窗口大小随链路变化</span><br></pre></td></tr></table></figure>
+<h4 id="一、TCP窗口机制"><a href="#一、TCP窗口机制" class="headerlink" title="一、TCP窗口机制"></a>一、TCP窗口机制</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TCP中窗口大小是指tcp协议一次传输多少个数据。因为TCP是一个面向连接的可靠的传输协议，既然是可靠的就需要传输的数据进行确认。TCP窗口机制有两种，一种是固定窗口大小，另一种是滑动窗口。数据在传输时，TCP会对所有数据进行编号，发送方在发送过程中始终保持着一个窗口，只有落在发送窗口内的数据帧才允许被发送；同时接收方也始终保持着一个接收窗口，只有落在窗口内的数据才会被接收。这样通过改变发送窗口和接收窗口的大小就可以实现流量控制。</span><br></pre></td></tr></table></figure>
+<h4 id="二、TCP窗口大小"><a href="#二、TCP窗口大小" class="headerlink" title="二、TCP窗口大小"></a>二、TCP窗口大小</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">TCP的窗口滑动技术通过动态改变窗口的大小来调节两台主机之间数据传输。每个TCP/IP主机支持全双工数据传输，因此TCP有两个滑动窗口，一个用于接收数据，一个用于发送数据。接收方设备要求窗口大小为0时，表明接收方已经接收了全部数据，或者接收方应用程序没有时间读取数据，要求暂停发送。</span><br><span class="line">TCP在传送数据时，第一次接受方窗口大小是由链路带宽决定的，但是接收方在接收到的数据后，返回ack确认报文，同时也告诉了发送方自己的窗口大小，此时发送方第二次发送数据时，会改变自己的窗口大小和接收方一致。</span><br><span class="line">当窗口过大时，会导致不必要的数据来拥塞我们的链路，但是窗口太小时，会造成很大的延时，比如为1时，发送方每发送一个数据，接收方就会返回一个ack报文，在发送方未接收到接收方的确认报文ack之前不会进行下一次发送。（当链路变好了或者变差了这个窗口还会发生变化，并不是第一次协商好了以后就永远不变了。）【这句话不太理解】</span><br></pre></td></tr></table></figure>
+<h4 id="三、窗口滑动协议"><a href="#三、窗口滑动协议" class="headerlink" title="三、窗口滑动协议"></a>三、窗口滑动协议</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">窗口滑动协议是TCP使用的一种流量控制方法。该协议允许发送方在停止并等待接收确认报文前可以连续发送多个分组。由于发送方不必每发一个分组就停下来等待确认，因此该协议可以加速数据的传输。只有在接收窗口向前滑动时（与此同时也发送了确认），发送窗口才有可能向前滑动。收发两端的窗口按照以上规律不断地向前滑动，因此这种协议又称为滑动窗口协议。</span><br></pre></td></tr></table></figure>
+<h4 id="四、滑动窗口原理"><a href="#四、滑动窗口原理" class="headerlink" title="四、滑动窗口原理"></a>四、滑动窗口原理</h4><p><img src="C:\Users\Administrator\Downloads\滑动窗口原理.png" alt></p>
+<ol>
+<li>窗口大小是指无需等待确认就可以继续发送数据的最大值，上图的窗口大小是4000字节（4段）</li>
+<li>发送前4段时，无需ACK，直接发送</li>
+<li>收到第一个ACK后，滑动窗口向后移动，继续发送第五段的数据</li>
+<li>操作系统内核为了维护这个滑动窗口，需要开辟发送缓冲区来记录当前还有哪些数据没有应答，只有应答的数据才会从缓冲区中删除</li>
+<li>窗口越大，则网络的吞吐率就越高</li>
+</ol>
+<h4 id="五、滑动窗口丢包原理"><a href="#五、滑动窗口丢包原理" class="headerlink" title="五、滑动窗口丢包原理"></a>五、滑动窗口丢包原理</h4><p>#####发送端丢包原理</p>
+<p><img src="C:\Users\Administrator\Downloads\滑动窗口发送端丢包原理图.png" alt></p>
+<p>当某一段报文丢失了，图中（1001-2000）数据段丢失了，接收方没有接收到该数据段，则会一直给发送端发送ACK（下一个是1001），如果发送端连续收到同样的ACK（下一个是1001），就会将对应的（1001-2000）重新发送，这时候如果接收端收到1001后，再次返回的就是ACK（7001）。这种机制被称为“高速重发机制”（快速重传）</p>
+<p>#####接收端丢包原理</p>
+<p><img src="C:\Users\Administrator\Downloads\滑动窗口接收端丢包原理图.png" alt></p>
+<p>接收端的下一个2001丢失了，但是发送端收到了ACK（下一个3001），说明1-3000的数据段已经接收到了，数据已经传输到了发送端，所以不需要理会。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/03/08/TCP 滑动窗口/" data-id="cjt060f3a00007ox0sziivnjv" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2019/03/08/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/03/08/TCP 滑动窗口/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/03/08/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
